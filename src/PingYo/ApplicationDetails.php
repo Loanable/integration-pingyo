@@ -248,10 +248,12 @@ class ApplicationDetails
                 [['dateofbirth', 'employmentstarted', 'nextpaydate', 'followingpaydate', 'addressmovein']]
             ],
             'dateAfter' => [
-                [['nextpaydate', 'followingpaydate'], $this->getTodayDate()],
+                [['nextpaydate'], $this->getTodayDate()],
+                [['followingpaydate'], $this->getNextPayDate()],
             ],
             'dateBefore' => [
-                [['nextpaydate', 'followingpaydate'], $this->getValidPAYDATE()],
+                [['nextpaydate'], $this->getValidPAYDATE()],
+                [['followingpaydate'], $this->getValidFollowingPayDate()],
                 [['dateofbirth'], $this->getValidDOB()]
             ],
             'in' => [
@@ -542,16 +544,33 @@ class ApplicationDetails
 
     private function getTodayDate()
     {
-        $this->logger->debug("ApplicationDetails::getTodayDate() called");
+        $this->logger->debug('ApplicationDetails::getTodayDate() called');
 
-        return new \DateTime("now", new \DateTimeZone("UTC"));
+        return new \DateTime('now', new \DateTimeZone('UTC'));
+    }
+
+    private function getNextPayDate()
+    {
+        $this->logger->debug('ApplicationDetails::getNextPayDate() called');
+
+        return new \DateTime($this->nextpaydate, new \DateTimeZone('UTC'));
     }
 
     private function getValidPAYDATE()
     {
-        $this->logger->debug("ApplicationDetails::getValidPAYDATE() called");
+        $this->logger->debug('ApplicationDetails::getValidPAYDATE() called');
 
-        $date = new \DateTime("now", new \DateTimeZone("UTC"));
+        $date = new \DateTime("now", new \DateTimeZone('UTC'));
+        $date->add(date_interval_create_from_date_string('45 days'));
+        return $date;
+    }
+
+    private function getValidFollowingPayDate()
+    {
+        $this->logger->debug('ApplicationDetails::getValidFollowingPayDate() called');
+
+        $date = $this->getNextPayDate();
+
         $date->add(date_interval_create_from_date_string('45 days'));
         return $date;
     }

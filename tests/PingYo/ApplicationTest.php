@@ -244,7 +244,7 @@ class ApplicationTest extends TestCase
         $a->payamount = 100;
         $a->incomepaymenttype = IncomePaymentTypes::RegionalDirectDeposit;
         $a->nextpaydate = (new DateTime('+5 days'))->format('Y-m-d');
-        $a->followingpaydate = (new DateTime('+35 days'))->format('Y-m-d');
+        $a->followingpaydate = (new DateTime('+85 days'))->format('Y-m-d');
         $a->loanamount = 10000;
         $a->nationalidentitynumber = null;
         $a->nationalidentitynumbertype = NationalIdentityNumberTypes::NationalInsurance;
@@ -298,6 +298,8 @@ class ApplicationTest extends TestCase
 
         $r = $a->validate();
         $this->assertNotTrue($r);
+        $this->assertArrayHasKey('followingpaydate', $r);
+        $this->assertArrayHasKey('dateofbirth', $r);
     }
 
 
